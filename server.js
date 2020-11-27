@@ -25,4 +25,4 @@ connection.once("open", () =>
 const articlesRouter = require("./routes/articles");
 app.use("/articles", articlesRouter);
 
-app.listen(port, () => console.log(`The app is runniing on Port: ${port}`));
+app.listen(port, () => console.log(`The app is running on Port: ${port}`));
