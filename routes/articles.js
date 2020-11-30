@@ -1,6 +1,19 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("multer");
+
 const Articles = require("../models/articles");
+
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "./client/public/uploads");
+  },
+  filename: (req, file, callback) => {
+    callback(null, file.originalname);
+  },
+});
+
+const upload = multer({ storage: storage });
 
 //REQUEST GET ALL ARTICLES
 router.get("/", (req, res) => {
@@ -10,11 +23,12 @@ router.get("/", (req, res) => {
 });
 
 // REQUEST ADD NEW ARTICLE
-router.post("/add", (req, res) => {
+router.post("/add", upload.single("articleImage"), (req, res) => {
   const newArticle = new Articles({
     title: req.body.title,
     article: req.body.article,
     authorname: req.body.authorname,
+    articleImage: req.file.originalname,
   });
   newArticle
     .save()
@@ -30,12 +44,13 @@ router.get("/:id", (req, res) => {
 });
 
 // REQUEST FIND ARTICLE BY ID AND UPDATE
-router.put("/update/:id", (req, res) => {
+router.put("/update/:id", upload.single("articleImage"), (req, res) => {
   Articles.findById(req.params.id)
     .then((article) => {
       article.title = req.body.title;
       article.article = req.body.article;
       article.authorname = req.body.authorname;
+      article.articleImage = req.file.originalname;
 
       article
         .save()

@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import spinner from "../spinner.gif";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const Articles = ({ posts }) => {
+  const [article, setArticle] = useState([]);
+  // DELETE ARTICLE BY ID
+  const deleteArticle = (id) => {
+    axios.delete(`/articles/${id}`).then((res) => alert(res.data));
+    setArticle(article.filter((elem) => elem._id !== id));
+  };
   return (
     <MainContainer>
       {!posts.length ? (
@@ -11,6 +18,11 @@ const Articles = ({ posts }) => {
       ) : (
         posts.map((article, key) => (
           <div className="container" key={key}>
+            <img
+              src={`/uploads/${article.articleImage}`}
+              alt="..."
+              style={{ width: "40%" }}
+            />
             <Link
               to={{
                 pathname: `/article/${article._id}`,
@@ -25,14 +37,20 @@ const Articles = ({ posts }) => {
             </span>
             <div className="row my-5">
               <div className="col-sm-2">
-                <Link to="" className="btn btn-outline-success">
+                <Link
+                  to={`/update/${article._id}`}
+                  className="btn btn-outline-success"
+                >
                   Edit Article
                 </Link>
               </div>
               <div className="col-sm-2">
-                <Link to="" className="btn btn-outline-danger">
+                <button
+                  onClick={() => deleteArticle(article._id)}
+                  className="btn btn-outline-danger"
+                >
                   Delete Article
-                </Link>
+                </button>
               </div>
             </div>
             <hr />

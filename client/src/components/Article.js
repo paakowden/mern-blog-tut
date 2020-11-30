@@ -2,11 +2,13 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import spinner from "../spinner.gif";
+import { Link } from "react-router-dom";
 
 const Article = (props) => {
   const [title, setTitle] = useState("");
   const [article, setArticle] = useState("");
   const [authorname, setAuthorname] = useState("");
+  const [fileName, setFileName] = useState("");
 
   useEffect(() => {
     axios
@@ -15,6 +17,7 @@ const Article = (props) => {
         setTitle(res.data.title),
         setArticle(res.data.article),
         setAuthorname(res.data.authorname),
+        setFileName(res.data.articleImage),
       ])
       .catch((error) => console.log(error));
   }, [props]);
@@ -25,9 +28,18 @@ const Article = (props) => {
         <img src={spinner} alt="loading..." />
       ) : (
         <>
+          <img
+            src={`/uploads/${fileName}`}
+            alt="..."
+            style={{ width: "40%", margin: "0 auto", display: "flex" }}
+          />
           <h2>{title}</h2>
           <p>{article}</p>
           <p className="badge badge-secondary">{authorname}</p>
+          <br />
+          <Link to="/" className="btn btn-primary">
+            Back to Home
+          </Link>
         </>
       )}
     </MainContainer>
@@ -51,5 +63,13 @@ const MainContainer = styled.div`
   img {
     display: block;
     margin: auto;
+  }
+
+  .btn-primary {
+    background: var(--dark-green);
+    border: none;
+    &:hover {
+      background: var(--light-green);
+    }
   }
 `;
